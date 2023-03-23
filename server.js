@@ -8,12 +8,13 @@ const sportsEquipmentController = require('./controllers/sportsEquipment')
 // This is array destructuring in Javascript. It's actually creating four variables (books, householdProducts etc) and it's setting them equal to the value of the key in the exported object from the file they're pointing at.
 // const { books, householdProducts, music, sportsEquipment } = require('./models');
 // console.log(sportsEquipment);
+const { specials } = require('./models')
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended:false }));
 
 app.get('/', (req, res) => {
-    res.render('home.ejs')
+    res.render('home.ejs', {specials})
 })
 
 app.use('/books', booksController);
