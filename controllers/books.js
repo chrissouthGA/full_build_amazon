@@ -2,9 +2,17 @@ const express = require('express');
 const router = express.Router();
 let { books } = require('../models');
 
-router.get('', (req, res) => {
-    console.log(books);
-    res.render('books/index.ejs', {books})
+router.get('', async (req, res, next) => {
+    try {
+        // Run this Javascript code
+        const myBooks = await books.find({});
+        console.log(myBooks);
+        res.render('books/index', {books: myBooks})
+    } catch(err) {
+        // If there's an error, it'll go to the catch block
+        console.log(err);
+        next();
+    }
 })
 
 router.get('/new', (req, res) => {
