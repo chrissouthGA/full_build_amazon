@@ -9,7 +9,10 @@ const sportsEquipmentController = require('./controllers/sportsEquipment')
 // const { books, householdProducts, music, sportsEquipment } = require('./models');
 // console.log(sportsEquipment);
 const { specials } = require('./models')
+// I want to specify that all my views for res.render are going to be in a directory I call views. 
 app.set('view engine', 'ejs');
+// I now also want to make sure I connect this to the CSS files and any DOM manipulation. It expects this to be in a directory named "public"
+app.use(express.static('public'));
 
 app.use(express.urlencoded({ extended:false }));
 
