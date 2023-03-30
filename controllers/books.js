@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 // Array destructuring. That means if I go to models/index.js, which is the file I'm requiring, I expect that it's exporting an object. I only want the value of books from that object. It creates a variable books that's set to the value of the books key in the export for this file.
-let { books } = require('../models');
+const { books } = require('../models');
 
 router.get('', async (req, res, next) => {
     try {
@@ -37,6 +37,31 @@ router.post('', async (req, res, next) => {
         const newBook = await books.create(req.body);
         console.log(newBook);
         res.redirect('/books')
+    } catch(err) {
+        console.log(err);
+        next();
+    }
+})
+
+router.get('/:id/edit', async (req, res, next) => {
+    try {
+        const bookToBeEdited = await books.findById(req.params.id);
+        console.log(bookToBeEdited);
+        res.render('books/edit.ejs', {book: bookToBeEdited})
+    } catch(err) {
+        console.log(err);
+        next()
+    }
+})
+
+router.put('/:id', async (req, res, next) => {
+    try {
+        const formData = req.body;
+        console.log(typeof formData.price);
+        formData.price = 'abcd';
+        const updatedBook = await books.findByIdAndUpdate(req.params.id, formData);
+        console.log(updatedBook);
+        res.redirect(`/books/${req.params.id}`)
     } catch(err) {
         console.log(err);
         next();
