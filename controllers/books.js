@@ -56,12 +56,34 @@ router.get('/:id/edit', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
     try {
-        const formData = req.body;
-        console.log(typeof formData.price);
-        formData.price = 'abcd';
-        const updatedBook = await books.findByIdAndUpdate(req.params.id, formData);
-        console.log(updatedBook);
+        // const formData = req.body;
+        // console.log(typeof formData.price);
+        // formData.price = 'abcd';
+        const updatedBook = await books.findByIdAndUpdate(req.params.id, req.body);
+        // console.log(updatedBook);
         res.redirect(`/books/${req.params.id}`)
+    } catch(err) {
+        console.log(err);
+        next();
+    }
+})
+
+router.get('/:id/delete', async (req, res, next) => {
+    try {
+        const bookToBeDeleted = await books.findById(req.params.id);
+        // console.log(bookToBeDeleted);
+        res.render('books/delete.ejs', {book: bookToBeDeleted})
+    } catch(err) {
+        console.log(err);
+        next();
+    }
+})
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const deletedItem = await books.findByIdAndDelete(req.params.id);
+        // console.log(deletedItem);
+        res.redirect('/books');
     } catch(err) {
         console.log(err);
         next();
