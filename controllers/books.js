@@ -2,12 +2,38 @@ const express = require('express');
 const router = express.Router();
 // Array destructuring. That means if I go to models/index.js, which is the file I'm requiring, I expect that it's exporting an object. I only want the value of books from that object. It creates a variable books that's set to the value of the books key in the export for this file.
 const { books } = require('../models');
+const seededData = [
+        {
+            title: "The outsiders",
+            author: "S.E. Hinton",
+            price: 5.99
+        }, {
+            title: "Odd Thomas",
+            author: "Dean Koontz",
+            price: 8.99
+        }, {
+            title: "The Four Agreements",
+            author: "Don Miguel Ruiz",
+            price: 4.99
+        }, {
+            title: "Wild",
+            author: "Cheryl Strayed",
+            price: 19.99
+        }
+    ]
 
 router.get('', async (req, res, next) => {
     try {
+        let myBooks;
+        console.log(req.query);
+        if(req.query.search) {
+            myBooks = await books.find({author: req.query.search})
+            console.log(myBooks);
+        } else {
+            myBooks = await books.find({});
+        }
         // Run this Javascript code
-        const myBooks = await books.find({});
-        console.log(myBooks);
+        // console.log(myBooks);
         res.render('books/index', {books: myBooks})
     } catch(err) {
         // If there's an error, it'll go to the catch block
@@ -54,6 +80,17 @@ router.get('/:id/edit', async (req, res, next) => {
     }
 })
 
+router.get('/seed', async (req, res, next) => {
+    try {
+        await books.deleteMany({})
+        await books.insertMany(seededData);
+        res.redirect('/books');
+    } catch(err) {
+        console.log(err);
+        next();
+    }
+})
+
 router.put('/:id', async (req, res, next) => {
     try {
         // const formData = req.body;
@@ -89,5 +126,6 @@ router.delete('/:id', async (req, res) => {
         next();
     }
 })
+
 
 module.exports = router;
