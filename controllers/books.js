@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 // Array destructuring. That means if I go to models/index.js, which is the file I'm requiring, I expect that it's exporting an object. I only want the value of books from that object. It creates a variable books that's set to the value of the books key in the export for this file.
-const { books } = require('../models');
+const { Books } = require('../models');
+// const models = require('../models');
+// const Books = models.Books;
 const seededData = [
         {
             title: "The outsiders",
@@ -27,10 +29,11 @@ router.get('', async (req, res, next) => {
         let myBooks;
         console.log(req.query);
         if(req.query.search) {
-            myBooks = await books.find({author: req.query.search})
+            myBooks = await Books.find({author: req.query.search})
             console.log(myBooks);
         } else {
-            myBooks = await books.find({});
+            myBooks = await Books.find({});
+            console.log(myBooks);
         }
         // Run this Javascript code
         // console.log(myBooks);
@@ -49,9 +52,9 @@ router.get('/new', (req, res) => {
 router.get('/:id', async (req, res, next) => {
     try {
         // Grab the book that has the corresponding ID in MongoDB
-        const myBook = await books.findById(req.params.id);
+        const myBook = await Books.findById(req.params.id);
         console.log(myBook);
-        res.render('books/show', {book: myBook})
+        res.render('books/show', {myBook})
     } catch(err) {
         console.log(err);
         next();
@@ -60,7 +63,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('', async (req, res, next) => {
     try {
-        const newBook = await books.create(req.body);
+        const newBook = await Books.create(req.body);
         console.log(newBook);
         res.redirect('/books')
     } catch(err) {
@@ -71,7 +74,7 @@ router.post('', async (req, res, next) => {
 
 router.get('/:id/edit', async (req, res, next) => {
     try {
-        const bookToBeEdited = await books.findById(req.params.id);
+        const bookToBeEdited = await Books.findById(req.params.id);
         console.log(bookToBeEdited);
         res.render('books/edit.ejs', {book: bookToBeEdited})
     } catch(err) {
@@ -82,8 +85,8 @@ router.get('/:id/edit', async (req, res, next) => {
 
 router.get('/seed', async (req, res, next) => {
     try {
-        await books.deleteMany({})
-        await books.insertMany(seededData);
+        await Books.deleteMany({})
+        await Books.insertMany(seededData);
         res.redirect('/books');
     } catch(err) {
         console.log(err);
@@ -96,7 +99,7 @@ router.put('/:id', async (req, res, next) => {
         // const formData = req.body;
         // console.log(typeof formData.price);
         // formData.price = 'abcd';
-        const updatedBook = await books.findByIdAndUpdate(req.params.id, req.body);
+        const updatedBook = await Books.findByIdAndUpdate(req.params.id, req.body);
         // console.log(updatedBook);
         res.redirect(`/books/${req.params.id}`)
     } catch(err) {
@@ -107,7 +110,7 @@ router.put('/:id', async (req, res, next) => {
 
 router.get('/:id/delete', async (req, res, next) => {
     try {
-        const bookToBeDeleted = await books.findById(req.params.id);
+        const bookToBeDeleted = await Books.findById(req.params.id);
         // console.log(bookToBeDeleted);
         res.render('books/delete.ejs', {book: bookToBeDeleted})
     } catch(err) {
@@ -118,7 +121,7 @@ router.get('/:id/delete', async (req, res, next) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const deletedItem = await books.findByIdAndDelete(req.params.id);
+        const deletedItem = await Books.findByIdAndDelete(req.params.id);
         // console.log(deletedItem);
         res.redirect('/books');
     } catch(err) {

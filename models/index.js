@@ -2,9 +2,9 @@
 require('../config/connection');
 
 module.exports = {
-    books: require('./Books'),
-    householdProducts: require('./HouseholdProducts'),
-    music: require('./Music'),
-    sportsEquipment: require('./SportsEquipment'),
-    specials: require('./Specials')
+    Books: require('./Books'),
+    HouseholdProducts: require('./HouseholdProducts'),
+    Music: require('./Music'),
+    SportsEquipment: require('./SportsEquipment'),
+    Specials: require('./Specials')
 }

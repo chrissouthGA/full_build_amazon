@@ -10,3 +10,11 @@ button.addEventListener('mouseover', () => {
     link.href = `/books?search=${input.value}`
     console.log(link);
 })
+
+document.querySelector('body').addEventListener('keydown', (e) => {
+    console.log(e);
+    if(e.key === "Enter") {
+        link.href = `/books?search=${input.value}`;
+        location.replace(link.href);
+    }
+})
