@@ -49,6 +49,17 @@ router.get('/new', (req, res) => {
     res.render('books/new.ejs')
 })
 
+router.get('/seed', async (req, res, next) => {
+    try {
+        await Books.deleteMany({});
+        await Books.insertMany(seededData);
+        res.redirect('/books');
+    } catch(err) {
+        console.log(err);
+        next();
+    }
+})
+
 router.get('/:id', async (req, res, next) => {
     try {
         // Grab the book that has the corresponding ID in MongoDB
@@ -80,17 +91,6 @@ router.get('/:id/edit', async (req, res, next) => {
     } catch(err) {
         console.log(err);
         next()
-    }
-})
-
-router.get('/seed', async (req, res, next) => {
-    try {
-        await Books.deleteMany({})
-        await Books.insertMany(seededData);
-        res.redirect('/books');
-    } catch(err) {
-        console.log(err);
-        next();
     }
 })
 
