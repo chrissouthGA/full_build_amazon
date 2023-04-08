@@ -5,27 +5,28 @@ const { Books } = require('../models');
 // const models = require('../models');
 // const Books = models.Books;
 const seededData = [
-        {
-            title: "The outsiders",
-            author: "S.E. Hinton",
-            price: 5.99
-        }, {
-            title: "Odd Thomas",
-            author: "Dean Koontz",
-            price: 8.99
-        }, {
-            title: "The Four Agreements",
-            author: "Don Miguel Ruiz",
-            price: 4.99
-        }, {
-            title: "Wild",
-            author: "Cheryl Strayed",
-            price: 19.99
-        }
-    ]
+    {
+        title: "The outsiders",
+        author: "S.E. Hinton",
+        price: 5.99
+    }, {
+        title: "Odd Thomas",
+        author: "Dean Koontz",
+        price: 8.99
+    }, {
+        title: "The Four Agreements",
+        author: "Don Miguel Ruiz",
+        price: 4.99
+    }, {
+        title: "Wild",
+        author: "Cheryl Strayed",
+        price: 19.99
+    }
+]
 
 router.get('', async (req, res, next) => {
     try {
+        console.log(req.session)
         let myBooks;
         console.log(req.query);
         if(req.query.search) {

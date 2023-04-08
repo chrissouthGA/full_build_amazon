@@ -6,5 +6,6 @@ module.exports = {
     HouseholdProducts: require('./HouseholdProducts'),
     Music: require('./Music'),
     SportsEquipment: require('./SportsEquipment'),
-    Specials: require('./Specials')
+    Specials: require('./Specials'),
+    Users: require('./Users')
 }
