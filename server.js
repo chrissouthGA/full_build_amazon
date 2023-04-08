@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 2000;
 const methodOverride = require('method-override')
 const booksController = require('./controllers/books')
 const householdProductsController = require('./controllers/householdProducts')
