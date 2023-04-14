@@ -8,19 +8,23 @@ const seededData = [
     {
         title: "The outsiders",
         author: "S.E. Hinton",
-        price: 5.99
+        price: 5.99,
+        user: "64388c7528ac315ee74772bf"
     }, {
         title: "Odd Thomas",
         author: "Dean Koontz",
-        price: 8.99
+        price: 8.99,
+        user: "64388c7528ac315ee74772bf"
     }, {
         title: "The Four Agreements",
         author: "Don Miguel Ruiz",
-        price: 4.99
+        price: 4.99,
+        user: "64388c8628ac315ee74772c1"
     }, {
         title: "Wild",
         author: "Cheryl Strayed",
-        price: 19.99
+        price: 19.99,
+        user: "64388c8628ac315ee74772c1"
     }
 ]
 
@@ -36,9 +40,13 @@ router.get('', async (req, res, next) => {
             myBooks = await Books.find({});
             console.log(myBooks);
         }
+        let user;
+        if(req.session.currentUser) {
+            user = req.session.currentUser;
+        }
         // Run this Javascript code
         // console.log(myBooks);
-        res.render('books/index', {books: myBooks})
+        res.render('books/index', {books: myBooks, user})
     } catch(err) {
         // If there's an error, it'll go to the catch block
         console.log(err);
@@ -61,12 +69,19 @@ router.get('/seed', async (req, res, next) => {
     }
 })
 
+// show route
 router.get('/:id', async (req, res, next) => {
     try {
         // Grab the book that has the corresponding ID in MongoDB
         const myBook = await Books.findById(req.params.id);
+        let usersBook = false;
+        if(req.session.currentUser) {
+            if(req.session.currentUser.id === myBook.user.toString()) {
+                usersBook = true;
+            }
+        }
         console.log(myBook);
-        res.render('books/show', {myBook})
+        res.render('books/show', {myBook, usersBook})
     } catch(err) {
         console.log(err);
         next();
@@ -87,8 +102,12 @@ router.post('', async (req, res, next) => {
 router.get('/:id/edit', async (req, res, next) => {
     try {
         const bookToBeEdited = await Books.findById(req.params.id);
+        if(req.session.currentUser && req.session.currentUser.id === bookToBeEdited.user.toString()) {
+            res.render('books/edit.ejs', {book: bookToBeEdited})
+        } else {
+            res.redirect('/error')
+        }
         console.log(bookToBeEdited);
-        res.render('books/edit.ejs', {book: bookToBeEdited})
     } catch(err) {
         console.log(err);
         next()
@@ -101,8 +120,12 @@ router.put('/:id', async (req, res, next) => {
         // console.log(typeof formData.price);
         // formData.price = 'abcd';
         const updatedBook = await Books.findByIdAndUpdate(req.params.id, req.body);
+        if(req.session.currentUser && req.session.currentUser.id === updatedBook.user.toString()) {
+            res.redirect(`/books/${req.params.id}`)
+        } else {
+            res.redirect('/error')
+        }
         // console.log(updatedBook);
-        res.redirect(`/books/${req.params.id}`)
     } catch(err) {
         console.log(err);
         next();
@@ -112,8 +135,12 @@ router.put('/:id', async (req, res, next) => {
 router.get('/:id/delete', async (req, res, next) => {
     try {
         const bookToBeDeleted = await Books.findById(req.params.id);
+        if(req.session.currentUser && req.session.currentUser.id === bookToBeDeleted.user.toString()) {
+            res.render('books/delete.ejs', {book: bookToBeDeleted})
+        } else {
+            res.redirect('/error')
+        }
         // console.log(bookToBeDeleted);
-        res.render('books/delete.ejs', {book: bookToBeDeleted})
     } catch(err) {
         console.log(err);
         next();
@@ -123,8 +150,12 @@ router.get('/:id/delete', async (req, res, next) => {
 router.delete('/:id', async (req, res) => {
     try {
         const deletedItem = await Books.findByIdAndDelete(req.params.id);
+        if(req.session.currentUser && req.session.currentUser.id === deletedItem.user.toString()) {
+            res.redirect('/books');
+        } else {
+            res.redirect('/error')
+        }
         // console.log(deletedItem);
-        res.redirect('/books');
     } catch(err) {
         console.log(err);
         next();
